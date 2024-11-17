@@ -27,13 +27,14 @@ import {
 
 import { AppBreadcrumb } from './index'
 import { AppHeaderDropdown } from './header/index'
+import { set } from '../../src/redux/slices/SidebarSlice'
 
 const AppHeader = () => {
   const headerRef = useRef()
   const { colorMode, setColorMode } = useColorModes('coreui-free-react-admin-template-theme')
 
   const dispatch = useDispatch()
-  const sidebarShow = useSelector((state) => state.sidebarShow)
+  const { sidebarShow } = useSelector((state) => state.sidebar)
 
   useEffect(() => {
     document.addEventListener('scroll', () => {
@@ -46,7 +47,7 @@ const AppHeader = () => {
     <CHeader position="sticky" className="mb-4 p-0" ref={headerRef}>
       <CContainer className="border-bottom px-4" fluid>
         <CHeaderToggler
-          onClick={() => dispatch({ type: 'set', sidebarShow: !sidebarShow })}
+          onClick={() => dispatch(set(!sidebarShow))}
           style={{ marginInlineStart: '-14px' }}
         >
           <CIcon icon={cilMenu} size="lg" />

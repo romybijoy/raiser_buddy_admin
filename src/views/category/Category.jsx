@@ -123,7 +123,7 @@ const Category = () => {
                 <h2>Loading</h2>)}
               */}
             <tbody>
-                {categories?.map((data, i) => (
+                {categories.length !== 0 && categories?.map((data, i) => (
                   <tr key={i}>
                     <td>{5 * (p - 1) + i + 1}</td>
                     <td>{data.name}</td>

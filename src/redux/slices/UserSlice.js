@@ -21,73 +21,91 @@ export const createUser = createAsyncThunk('createUser', async (data, { rejectWi
   }
 })
 
+export const refreshToken = createAsyncThunk('refreshToken', async (data, { rejectWithValue }) => {
+  console.log('data', data)
+  const response = await fetch(`${hostname}/auth/refresh`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(token),
+  })
+
+  try {
+    const result = await response.json()
+    return result
+  } catch (error) {
+    return rejectWithValue(error)
+  }
+})
 //read action
 export const showUser = createAsyncThunk('showUser', async (data, { rejectWithValue }) => {
   console.log(data.page)
   let response
- response = await fetch(
-        `${hostname}/admin/get-all-users?pageNumber=${data.page}&pageSize=5`,
-        {
-          method: 'GET',
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        },
-      )
-
-  try {
-    const result = await response.json()
-    console.log(result)
-    return result
-  } catch (error) {
-    return rejectWithValue(error)
-  }
-})
-
-
-export const showUsersByKeyword = createAsyncThunk('showUsersByKeyword', async (data, { rejectWithValue }) => {
-  console.log(data.page)
-  let response
- response = await fetch(
-        `${hostname}/admin/get-all-users/keyword/${data.keyword}?pageNumber=${data.page}&pageSize=5`,
-        {
-          method: 'GET',
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        },
-      )
-
-  try {
-    const result = await response.json()
-    console.log(result)
-    return result
-  } catch (error) {
-    return rejectWithValue(error)
-  }
-})
-
-
-//block action
-export const blockUser = createAsyncThunk('blockUser', async (data, { rejectWithValue, dispatch }) => {
-  const response = await fetch(`${hostname}/admin/block/${data.id}`, {
-    method: 'PUT',
+  response = await fetch(`${hostname}/admin/get-all-users?pageNumber=${data.page}&pageSize=5`, {
+    method: 'GET',
     headers: {
-      'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`,
     },
-    body: JSON.stringify({ block_reason: data.block_reason }),
   })
 
   try {
     const result = await response.json()
     console.log(result)
-    dispatch(showUser());
     return result
   } catch (error) {
     return rejectWithValue(error)
   }
 })
+
+export const showUsersByKeyword = createAsyncThunk(
+  'showUsersByKeyword',
+  async (data, { rejectWithValue }) => {
+    console.log(data.page)
+    let response
+    response = await fetch(
+      `${hostname}/admin/get-all-users/keyword/${data.keyword}?pageNumber=${data.page}&pageSize=5`,
+      {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    )
+
+    try {
+      const result = await response.json()
+      console.log(result)
+      return result
+    } catch (error) {
+      return rejectWithValue(error)
+    }
+  },
+)
+
+//block action
+export const blockUser = createAsyncThunk(
+  'blockUser',
+  async (data, { rejectWithValue, dispatch }) => {
+    const response = await fetch(`${hostname}/admin/block/${data.id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ block_reason: data.block_reason }),
+    })
+
+    try {
+      const result = await response.json()
+      console.log(result)
+      dispatch(showUser())
+      return result
+    } catch (error) {
+      return rejectWithValue(error)
+    }
+  },
+)
 
 //update action
 export const updateUser = createAsyncThunk('updateUser', async (data, { rejectWithValue }) => {
@@ -129,19 +147,24 @@ export const fetchUserById = createAsyncThunk('fetchUserById', async (id, { reje
 })
 
 export const userDetail = createSlice({
-  name: 'userDetail',
+  name: 'app',
   initialState: {
     users: [],
     loading: false,
     error: null,
     searchData: [],
     count: 0,
+    token: localStorage.getItem('token'),
   },
 
   reducers: {
-    searchUser: (state, action) => {
-      console.log(action.payload)
-      state.searchData = action.payload
+    setAccessToken: (state, action) => {
+      state.accessToken = action.payload
+      localStorage.setItem('token', action.payload)
+    },
+    logout: (state) => {
+      state.accessToken = null
+      localStorage.removeItem('token')
     },
   },
 
@@ -163,24 +186,27 @@ export const userDetail = createSlice({
       })
       .addCase(showUser.fulfilled, (state, action) => {
         state.loading = false
-        state.users = action.payload.content;
-        state.count = action.payload.totalElements;
+        state.users = action.payload.content
+        if (action.payload.code === 404) {
+          state.users = []
+        }
+        state.count = action.payload.totalElements
       })
       .addCase(showUser.rejected, (state, action) => {
         state.loading = false
         state.error = action.payload
       })
       .addCase(showUsersByKeyword.pending, (state) => {
-        state.loading = true;
+        state.loading = true
       })
       .addCase(showUsersByKeyword.fulfilled, (state, action) => {
-        state.loading = false;
-        state.users = action.payload.content;
-        state.count = action.payload.totalElements;
+        state.loading = false
+        state.users = action.payload.content
+        state.count = action.payload.totalElements
       })
       .addCase(showUsersByKeyword.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
+        state.loading = false
+        state.error = action.payload
       })
       .addCase(blockUser.pending, (state) => {
         state.loading = true
@@ -204,6 +230,18 @@ export const userDetail = createSlice({
         state.loading = false
         state.error = action.payload.message
       })
+      .addCase(refreshToken.pending, (state) => {
+        state.loading = true
+      })
+      .addCase(refreshToken.fulfilled, (state, action) => {
+        state.loading = false
+        state.token = action.payload.refreshToken
+        localStorage.setItem('token', action.payload.refreshToken)
+      })
+      .addCase(refreshToken.rejected, (state, action) => {
+        state.loading = false
+        state.error = action.payload // Optionally handle forced logout here if refresh fails
+      })
     // .addCase(fetchUserById.pending, (state) => {
     //   state.loading = true;
     // })
@@ -220,4 +258,4 @@ export const userDetail = createSlice({
 
 export default userDetail.reducer
 
-export const { searchUser } = userDetail.actions
+export const { setAccessToken, logout } = userDetail.actions

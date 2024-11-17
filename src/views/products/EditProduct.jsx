@@ -179,7 +179,7 @@ const AddProduct = () => {
       })
       if(error){
         toast.error(error);
-        navigate("/signup");
+        navigate("/products");
       }else{
         dispatch(showProduct({ page: 0, pageSize: 30 }))
       toast.success("Product updated successfully");

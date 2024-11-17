@@ -28,8 +28,10 @@
     "firebase": "^10.13.1",
     "formik": "^2.4.6",
     "prop-types": "^15.8.1",
+    "raiserbuddy": "file:",
     "react": "^18.3.1",
     "react-bootstrap": "^2.10.4",
+    "react-datepicker": "^7.5.0",
     "react-dom": "^18.3.1",
     "react-easy-crop": "^5.0.8",
     "react-paginate": "^8.2.0",
@@ -42,6 +44,8 @@
     "yup": "^1.4.0"
   },
   "devDependencies": {
+    "@types/jspdf": "^2.0.0",
+    "@types/xlsx": "^0.0.36",
     "@vitejs/plugin-react": "^4.3.1",
     "autoprefixer": "^10.4.19",
     "eslint": "^8.57.0",
@@ -49,6 +53,7 @@
     "eslint-plugin-prettier": "^5.1.3",
     "eslint-plugin-react": "^7.34.2",
     "eslint-plugin-react-hooks": "^4.6.2",
+    "jspdf-autotable": "^3.8.4",
     "postcss": "^8.4.38",
     "prettier": "3.3.2",
     "sass": "^1.77.5",

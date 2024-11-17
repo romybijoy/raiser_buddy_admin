@@ -26,7 +26,9 @@ const Products = () => {
   const { products, count, loading } = useSelector((state) => state.product)
 
   useEffect(() => {
+   
     dispatch(showProduct({ page: 0 }))
+  
   }, [])
 
   if (loading) {
@@ -128,7 +130,7 @@ const Products = () => {
             {loading ? (
                 <h2>Loading</h2>
               ) : (
-              products?.map((data, i) => (
+             products.length !== 0 && products?.map((data, i) => (
                 <tr key={i}>
                   <td>{5 * (p - 1) + i + 1}</td>
                   <td>{data?.name}</td>

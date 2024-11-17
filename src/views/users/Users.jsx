@@ -164,24 +164,27 @@ const Users = () => {
                 </tr>
               </thead>
               <tbody>
-              {loading ? (
-                <h2>Loading</h2>
-              ) : (
-                users.map((user, i) => (
-                  <tr key={i}>
-                    <td>{5 * (p - 1) + i + 1}</td>
-                    <td>{user?.name}</td>
-                    <td>{user?.email}</td>
-                    <td>{user?.role === 'ADMIN' ? 'Admin' : 'User'}</td>
-                    <td>{user?.mobile_number}</td>
-                    <td>
-                      <img src={user.image} width="100px" height="100px" />
-                    </td>
-                    <td>
-                      <CIcon icon={cilUserUnfollow} size="xl" onClick={() => submit(user?.id)} />
-                    </td>
-                  </tr>
-                )))}
+                {loading ? (
+                  <h2>Loading</h2>
+                ) : (
+                  users &&
+                  users?.length !== 0 &&
+                  users.map((user, i) => (
+                    <tr key={i}>
+                      <td>{5 * (p - 1) + i + 1}</td>
+                      <td>{user?.name}</td>
+                      <td>{user?.email}</td>
+                      <td>{user?.role === 'ADMIN' ? 'Admin' : 'User'}</td>
+                      <td>{user?.mobile_number}</td>
+                      <td>
+                        <img src={user.image} width="100px" height="100px" />
+                      </td>
+                      <td>
+                        <CIcon icon={cilUserUnfollow} size="xl" onClick={() => submit(user?.id)} />
+                      </td>
+                    </tr>
+                  ))
+                )}
               </tbody>
             </Table>
             {users && users?.length === 0 && <NodataMsg />}
