@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import classNames from 'classnames'
 
 import {
@@ -53,8 +53,23 @@ import avatar6 from 'src/assets/images/avatars/6.jpg'
 import WidgetsBrand from '../widgets/WidgetsBrand'
 import WidgetsDropdown from '../widgets/WidgetsDropdown'
 import MainChart from './MainChart'
+import {
+  showCounts,
+  showChartData,
+  showTop10Category,
+  showTop10Product,
+} from '../../redux/slices/DashboardSlice'
+
+import { useDispatch, useSelector } from 'react-redux'
 
 const Dashboard = () => {
+  const [startDate, setStartDate] = useState('2024-01-01T00:00')
+  const [endDate, setEndDate] = useState('2024-12-12T00:00')
+  const dispatch = useDispatch()
+  const { counts, chartData, top10Product, top10Category, loading } = useSelector(
+    (state) => state.dashboard,
+  )
+
   const progressExample = [
     { title: 'Visits', value: '29.703 Users', percent: 40, color: 'success' },
     { title: 'Unique', value: '24.093 Users', percent: 20, color: 'info' },
@@ -176,39 +191,51 @@ const Dashboard = () => {
     },
   ]
 
+  useEffect(() => {
+    dispatch(showChartData({ startDate: startDate, endDate: endDate }))
+    dispatch(showTop10Category())
+    dispatch(showTop10Product())
+  }, [])
+
   return (
     <>
-      <WidgetsDropdown className="mb-4" />
+      <WidgetsDropdown className="mb-4" data={counts} />
       <CCard className="mb-4">
         <CCardBody>
           <CRow>
             <CCol sm={5}>
               <h4 id="traffic" className="card-title mb-0">
-                Traffic
+                Sales
               </h4>
-              <div className="small text-body-secondary">January - July 2023</div>
+              <div className="small text-body-secondary">January - Dec 2024</div>
             </CCol>
             <CCol sm={7} className="d-none d-md-block">
               <CButton color="primary" className="float-end">
                 <CIcon icon={cilCloudDownload} />
               </CButton>
               <CButtonGroup className="float-end me-3">
-                {['Day', 'Month', 'Year'].map((value) => (
-                  <CButton
-                    color="outline-secondary"
-                    key={value}
-                    className="mx-0"
-                    active={value === 'Month'}
-                  >
-                    {value}
-                  </CButton>
-                ))}
+                <label for="startDate">Start Date:</label>{' '}
+                <input
+                  type="datetime-local"
+                  id="startDate"
+                  value={startDate}
+                  onChange={(e) => setStartDate(e.target.value)}
+                />{' '}
+                <label for="endDate">End Date:</label>{' '}
+                <input
+                  type="datetime-local"
+                  id="endDate"
+                  value={endDate}
+                  onChange={(e) => setEndDate(e.target.value)}
+                />{' '}
+                <button onclick={showChartData({ startDate: startDate, endDate: endDate })}>Filter</button>
               </CButtonGroup>
             </CCol>
           </CRow>
-          <MainChart />
+
+          <MainChart data={chartData} />
         </CCardBody>
-        <CCardFooter>
+        {/* <CCardFooter>
           <CRow
             xs={{ cols: 1, gutter: 4 }}
             sm={{ cols: 2 }}
@@ -231,15 +258,15 @@ const Dashboard = () => {
               </CCol>
             ))}
           </CRow>
-        </CCardFooter>
+        </CCardFooter> */}
       </CCard>
-      <WidgetsBrand className="mb-4" withCharts />
-      <CRow>
+      {/* <WidgetsBrand className="mb-4" withCharts /> */}
+      {/* <CRow>
         <CCol xs>
           <CCard className="mb-4">
             <CCardHeader>Traffic {' & '} Sales</CCardHeader>
-            <CCardBody>
-              <CRow>
+            <CCardBody> */}
+      {/* <CRow>
                 <CCol xs={12} md={6} xl={6}>
                   <CRow>
                     <CCol xs={6}>
@@ -319,9 +346,9 @@ const Dashboard = () => {
                     </div>
                   ))}
                 </CCol>
-              </CRow>
+              </CRow> */}
 
-              <br />
+      {/* <br />
 
               <CTable align="middle" className="mb-0 border" hover responsive>
                 <CTableHead className="text-nowrap">
@@ -374,6 +401,120 @@ const Dashboard = () => {
                       </CTableDataCell>
                     </CTableRow>
                   ))}
+                </CTableBody>
+              </CTable>
+            </CCardBody>
+          </CCard>
+        </CCol>
+      </CRow> */}
+
+      <CRow>
+        <CCol xs>
+          <CCard className="mb-4">
+            <CCardHeader>Top 10 Best selling Products</CCardHeader>
+            <CCardBody>
+              <br />
+
+              <CTable align="middle" className="mb-0 border" hover responsive>
+                <CTableHead className="text-nowrap">
+                  <CTableRow>
+                    <CTableHeaderCell className="bg-body-tertiary text-center">
+                      <CIcon icon={cilPeople} />
+                    </CTableHeaderCell>
+                    <CTableHeaderCell className="bg-body-tertiary text-center">
+                      Product
+                    </CTableHeaderCell>
+                    <CTableHeaderCell className="bg-body-tertiary text-center">
+                      Category
+                    </CTableHeaderCell>
+                    <CTableHeaderCell className="bg-body-tertiary text-center">
+                      Provider
+                    </CTableHeaderCell>
+                    <CTableHeaderCell className="bg-body-tertiary text-center">
+                      Quantity after sales
+                    </CTableHeaderCell>
+                    <CTableHeaderCell className="bg-body-tertiary text-center">
+                      Sales
+                    </CTableHeaderCell>
+                    {/* <CTableHeaderCell className="bg-body-tertiary">Activity</CTableHeaderCell> */}
+                  </CTableRow>
+                </CTableHead>
+                <CTableBody>
+                  {top10Product &&
+                    top10Product.map((item, index) => (
+                      <CTableRow v-for="item in tableItems" key={index}>
+                        <CTableDataCell className="text-center">
+                          <CAvatar size="md" src={item.images[0]} status="success" />
+                        </CTableDataCell>
+                        <CTableDataCell className="text-center">
+                          <div>{item.name}</div>
+                          {/* <div className="small text-body-secondary text-nowrap">
+                          <span>{item.user.new ? 'New' : 'Recurring'}</span> | Registered:{' '}
+                          {item.user.registered}
+                        </div> */}
+                        </CTableDataCell>
+                        <CTableDataCell className="text-center">
+                          <div className="fw-semibold">{item.category.name}</div>
+                        </CTableDataCell>
+                        <CTableDataCell className="text-center">
+                          <div className="fw-semibold">{item.provider.name}</div>
+                        </CTableDataCell>
+                        <CTableDataCell className="text-center">
+                          <div className="fw-semibold">{item.quantity}</div>
+                        </CTableDataCell>
+                        <CTableDataCell className="text-center">
+                          <div className="fw-semibold">{item.sales}</div>
+                        </CTableDataCell>
+                        {/* <CTableDataCell>
+                        <div className="small text-body-secondary text-nowrap">Last login</div>
+                        <div className="fw-semibold text-nowrap">{item.activity}</div>
+                      </CTableDataCell> */}
+                      </CTableRow>
+                    ))}
+                </CTableBody>
+              </CTable>
+            </CCardBody>
+          </CCard>
+        </CCol>
+      </CRow>
+
+      <CRow>
+        <CCol xs>
+          <CCard className="mb-4">
+            <CCardHeader>Top 10 Best Selling Category</CCardHeader>
+            <CCardBody>
+              <br />
+
+              <CTable align="middle" className="mb-0 border" hover responsive>
+                <CTableHead className="text-nowrap">
+                  <CTableRow>
+                    <CTableHeaderCell className="bg-body-tertiary text-center">
+                      <CIcon icon={cilPeople} />
+                    </CTableHeaderCell>
+                    <CTableHeaderCell className="bg-body-tertiary text-center">
+                      Category
+                    </CTableHeaderCell>
+
+                    <CTableHeaderCell className="bg-body-tertiary text-center">
+                      Sales
+                    </CTableHeaderCell>
+                  </CTableRow>
+                </CTableHead>
+                <CTableBody>
+                  {top10Category &&
+                    top10Category.map((item, index) => (
+                      <CTableRow v-for="item in tableItems" key={index}>
+                        <CTableDataCell className="text-center">
+                          <CAvatar size="md" src={item.categoryImage} status="success" />
+                        </CTableDataCell>
+                        <CTableDataCell className="text-center">
+                          <div>{item.categoryName}</div>
+                        </CTableDataCell>
+                        <CTableDataCell className="text-center">
+                          <div className="fw-semibold">{item.totalSales}</div>
+                        </CTableDataCell>
+                      </CTableRow>
+                    ))}
                 </CTableBody>
               </CTable>
             </CCardBody>

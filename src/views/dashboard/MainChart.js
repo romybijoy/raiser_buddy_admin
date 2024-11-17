@@ -3,9 +3,9 @@ import React, { useEffect, useRef } from 'react'
 import { CChartLine } from '@coreui/react-chartjs'
 import { getStyle } from '@coreui/utils'
 
-const MainChart = () => {
+const MainChart = (props) => {
   const chartRef = useRef(null)
-
+  console.log(props.data)
   useEffect(() => {
     document.documentElement.addEventListener('ColorSchemeChange', () => {
       if (chartRef.current) {
@@ -27,56 +27,57 @@ const MainChart = () => {
   }, [chartRef])
 
   const random = () => Math.round(Math.random() * 100)
-
+  const labels = props.data && props.data.map((item) => item.period)
+  const salesData = props.data && props.data.map((item) => item.totalSales)
   return (
     <>
       <CChartLine
         ref={chartRef}
         style={{ height: '300px', marginTop: '40px' }}
         data={{
-          labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+          labels: labels,
           datasets: [
+            // {
+            //   label: 'My First dataset',
+            //   backgroundColor: `rgba(${getStyle('--cui-info-rgb')}, .1)`,
+            //   borderColor: getStyle('--cui-info'),
+            //   pointHoverBackgroundColor: getStyle('--cui-info'),
+            //   borderWidth: 2,
+            //   data: [
+            //     random(50, 200),
+            //     random(50, 200),
+            //     random(50, 200),
+            //     random(50, 200),
+            //     random(50, 200),
+            //     random(50, 200),
+            //     random(50, 200),
+            //   ],
+            //   fill: true,
+            // },
+            // {
+            //   label: 'My Second dataset',
+            //   backgroundColor: 'transparent',
+            //   borderColor: getStyle('--cui-success'),
+            //   pointHoverBackgroundColor: getStyle('--cui-success'),
+            //   borderWidth: 2,
+            //   data: [
+            //     random(50, 200),
+            //     random(50, 200),
+            //     random(50, 200),
+            //     random(50, 200),
+            //     random(50, 200),
+            //     random(50, 200),
+            //     random(50, 200),
+            //   ],
+            // },
             {
-              label: 'My First dataset',
-              backgroundColor: `rgba(${getStyle('--cui-info-rgb')}, .1)`,
-              borderColor: getStyle('--cui-info'),
-              pointHoverBackgroundColor: getStyle('--cui-info'),
-              borderWidth: 2,
-              data: [
-                random(50, 200),
-                random(50, 200),
-                random(50, 200),
-                random(50, 200),
-                random(50, 200),
-                random(50, 200),
-                random(50, 200),
-              ],
-              fill: true,
-            },
-            {
-              label: 'My Second dataset',
-              backgroundColor: 'transparent',
-              borderColor: getStyle('--cui-success'),
-              pointHoverBackgroundColor: getStyle('--cui-success'),
-              borderWidth: 2,
-              data: [
-                random(50, 200),
-                random(50, 200),
-                random(50, 200),
-                random(50, 200),
-                random(50, 200),
-                random(50, 200),
-                random(50, 200),
-              ],
-            },
-            {
-              label: 'My Third dataset',
+              label: 'Sales occured this month',
               backgroundColor: 'transparent',
               borderColor: getStyle('--cui-danger'),
               pointHoverBackgroundColor: getStyle('--cui-danger'),
-              borderWidth: 1,
-              borderDash: [8, 5],
-              data: [65, 65, 65, 65, 65, 65, 65],
+              borderWidth: 2,
+              // borderDash: [8, 5],
+              data: salesData,
             },
           ],
         }}
@@ -105,7 +106,7 @@ const MainChart = () => {
               grid: {
                 color: getStyle('--cui-border-color-translucent'),
               },
-              max: 250,
+              max: salesData[0],
               ticks: {
                 color: getStyle('--cui-body-color'),
                 maxTicksLimit: 5,
