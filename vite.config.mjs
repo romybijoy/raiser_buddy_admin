@@ -40,10 +40,10 @@ export default defineConfig(() => {
       extensions: ['.mjs', '.js', '.ts', '.jsx', '.tsx', '.json', '.scss'],
     },
     server: {
-      port: 3000,
-      proxy: {
-        // https://vitejs.dev/config/server-options.html
-      },
+      watch: { usePolling: true },
+      host: true, // needed for Docker container port mapping to work
+      strictPort: true,
+      port: 4000, // you can replace this port with any port
     },
   }
 })
