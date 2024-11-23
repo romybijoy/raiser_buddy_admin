@@ -1,1 +1,1 @@
-export const hostname = "http://localhost:8085";
+export const hostname = "http://65.0.130.14";
