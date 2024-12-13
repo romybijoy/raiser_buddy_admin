@@ -38,7 +38,13 @@ const AppSidebar = () => {
     >
       <CSidebarHeader className="border-bottom">
         <CSidebarBrand to="/">
-          <CImage align="start" rounded src="src/assets/brand/logoo.png" width={80} height={60} />
+          <CImage
+            align="start"
+            rounded
+            src="src/assets/images/applogo.png"
+            width={80}
+            height={60}
+          />
           {/* <CIcon customClassName="sidebar-brand-full" icon={logo} height={32} /> */}
           {/* <CIcon customClassName="sidebar-brand-narrow" icon={sygnet} height={32} /> */}
           {/* <CHeaderBrand style={{textDecoration : "none"}}>Raiser Buddy</CHeaderBrand> */}
