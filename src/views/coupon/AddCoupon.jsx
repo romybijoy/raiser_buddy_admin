@@ -15,6 +15,8 @@ const AddCoupon = () => {
   const [formData, setFormData] = useState({
     code: '',
     discount: '',
+    title: '',
+    desc: '',
     validFrom: '',
     validUntil: '',
     status: true,
@@ -57,6 +59,8 @@ const AddCoupon = () => {
         setFormData({
           code: '',
           discount: '',
+          title: '',
+          desc: '',
           validFrom: '',
           validUntil: '',
           status: true,
@@ -82,11 +86,9 @@ const AddCoupon = () => {
   return (
     <FormContainer className="p-3">
       <h1>Create Coupon</h1>
-
-      {/* {valError && <Alert variant="danger">{valError}</Alert>} */}
       <Form noValidate validated={validated} onSubmit={handleSubmit}>
         <Form.Group className="my-2" controlId="code">
-          <Form.Label>Name</Form.Label>
+          <Form.Label>Code</Form.Label>
           <Form.Control
             type="text"
             placeholder="Enter code"
@@ -98,8 +100,34 @@ const AddCoupon = () => {
           <Form.Control.Feedback type="invalid">Please enter a code.</Form.Control.Feedback>
         </Form.Group>
 
-        <Form.Group className="my-2" controlId="discount">
+        <Form.Group className="my-2" controlId="title">
+          <Form.Label>Title</Form.Label>
+          <Form.Control
+            type="text"
+            placeholder="Enter title"
+            name="title"
+            value={formData.title}
+            onChange={handleInputChange}
+            required
+          ></Form.Control>
+          <Form.Control.Feedback type="invalid">Please enter a code.</Form.Control.Feedback>
+        </Form.Group>
+
+        <Form.Group className="my-2" controlId="desc">
           <Form.Label>Description</Form.Label>
+          <Form.Control
+            type="text"
+            placeholder="Enter Description"
+            name="desc"
+            value={formData.desc}
+            onChange={handleInputChange}
+            required
+          ></Form.Control>
+          <Form.Control.Feedback type="invalid">Please enter a description.</Form.Control.Feedback>
+        </Form.Group>
+
+        <Form.Group className="my-2" controlId="discount">
+          <Form.Label>Discount</Form.Label>
           <Form.Control
             type="number"
             placeholder="Enter discount"

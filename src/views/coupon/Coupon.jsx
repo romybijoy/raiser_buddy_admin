@@ -102,6 +102,8 @@ const Coupon = () => {
                 <th>S. No.</th>
                 <th>Code</th>
                 <th>Discount(%)</th>
+                <th>Title</th>
+                <th>Description</th>
                 <th>Valid From</th>
                 <th>Valid Until</th>
                 <th>Actions</th>
@@ -115,6 +117,8 @@ const Coupon = () => {
                     <td>{5 * (p - 1) + i + 1}</td>
                     <td>{data.code}</td>
                     <td>{data.discount}</td>
+                    <td>{data.title}</td>
+                    <td>{data.desc}</td>
                     <td>{data.validFrom}</td>
                     <td>{data.validUntil}</td>
                     <td>
