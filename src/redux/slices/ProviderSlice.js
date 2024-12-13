@@ -1,11 +1,11 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
-import { hostname } from '../../config'
+import { appConfig } from '../../config'
 
 const token = localStorage.getItem('token')
 //create action
 export const createProvider = createAsyncThunk('createProvider', async (data, { rejectWithValue }) => {
   console.log('data', data)
-  const response = await fetch(`${hostname}/provider`, {
+  const response = await fetch(`${appConfig.ip}/provider`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -26,7 +26,7 @@ export const showProvider = createAsyncThunk('showProvider', async (data, { reje
   console.log(data.page)
   let response
  response = await fetch(
-        `${hostname}/provider?pageNumber=${data.page}&pageSize=5`,
+        `${appConfig.ip}/provider?pageNumber=${data.page}&pageSize=5`,
         {
           method: 'GET',
           headers: {
@@ -49,7 +49,7 @@ export const showProvidersByKeyword = createAsyncThunk('showProvidersByKeyword',
   console.log(data.page)
   let response
  response = await fetch(
-        `${hostname}/provider/keyword/${data.keyword}?pageNumber=${data.page}&pageSize=5`,
+        `${appConfig.ip}/provider/keyword/${data.keyword}?pageNumber=${data.page}&pageSize=5`,
         {
           method: 'GET',
           headers: {
@@ -70,7 +70,7 @@ export const showProvidersByKeyword = createAsyncThunk('showProvidersByKeyword',
 
 //block action
 export const blockProvider = createAsyncThunk('blockProvider', async (data, { rejectWithValue, dispatch }) => {
-  const response = await fetch(`${hostname}/provider/block/${data.id}`, {
+  const response = await fetch(`${appConfig.ip}/provider/block/${data.id}`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
@@ -92,7 +92,7 @@ export const blockProvider = createAsyncThunk('blockProvider', async (data, { re
 //update action
 export const updateProvider = createAsyncThunk('updateProvider', async (data, { rejectWithValue }) => {
   console.log('updated data', data)
-  const response = await fetch(`${hostname}/provider/${data.id}`, {
+  const response = await fetch(`${appConfig.ip}/provider/${data.id}`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
@@ -111,7 +111,7 @@ export const updateProvider = createAsyncThunk('updateProvider', async (data, { 
 
 //update action
 export const fetchProviderById = createAsyncThunk('fetchProviderById', async (id, { rejectWithValue }) => {
-  const response = await fetch(`${hostname}/provider/${id}`, {
+  const response = await fetch(`${appConfig.ip}/provider/${id}`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -132,6 +132,7 @@ export const providerSlice = createSlice({
   name: 'ptovider',
   initialState: {
     providers: [],
+    result:null,
     loading: false,
     error: null,
     searchData: [],
@@ -149,7 +150,7 @@ export const providerSlice = createSlice({
       })
       .addCase(createProvider.fulfilled, (state, action) => {
         state.loading = false
-        state.users.push(action.payload)
+        state.result=action.payload;
       })
       .addCase(createProvider.rejected, (state, action) => {
         state.loading = false

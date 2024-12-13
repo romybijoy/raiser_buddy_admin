@@ -1,12 +1,12 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
-import { hostname } from '../../config'
+import { appConfig } from '../../config'
 
 const token = localStorage.getItem('token')
 
 export const createProduct = createAsyncThunk(
   'createProduct',
   async (yourData, { rejectWithValue, dispatch }) => {
-    const { name, shortDesc, desc, images, price, discount, quantity, categoryId } = yourData
+    const { name, shortDesc, desc, images, price, discount, quantity, categoryId, provider } = yourData
 
     const data = {
       name: name,
@@ -20,7 +20,7 @@ export const createProduct = createAsyncThunk(
     console.log('data', categoryId)
 
     try {
-      const response = await fetch(`${hostname}/product/${categoryId}`, {
+      const response = await fetch(`${appConfig.ip}/product/${categoryId}/${provider}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -46,7 +46,7 @@ export const createProduct = createAsyncThunk(
 export const showProduct = createAsyncThunk('showProduct', async (data, { rejectWithValue }) => {
   console.log(data)
   let response
-  response = await fetch(`${hostname}/product?pageNumber=${data.page}&pageSize=5`, {
+  response = await fetch(`${appConfig.ip}/product?pageNumber=${data.page}&pageSize=5`, {
     method: 'GET',
     headers: {
       Authorization: `Bearer ${token}`,
@@ -68,7 +68,7 @@ export const showProductByKeyword = createAsyncThunk(
     console.log(data.page)
     let response
     response = await fetch(
-      `${hostname}/product/keyword/${data.keyword}?pageNumber=${data.page}&pageSize=5`,
+      `${appConfig.ip}/product/keyword/${data.keyword}?pageNumber=${data.page}&pageSize=5`,
       {
         method: 'GET',
         headers: {
@@ -91,7 +91,7 @@ export const showProductByKeyword = createAsyncThunk(
 export const fetchProductById = createAsyncThunk(
   'fetchProductById',
   async (id, { rejectWithValue }) => {
-    const response = await fetch(`${hostname}/product/${id}`, {
+    const response = await fetch(`${appConfig.ip}/product/${id}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -113,7 +113,7 @@ export const fetchProductById = createAsyncThunk(
 export const deleteProduct = createAsyncThunk(
   'deleteProduct',
   async (id, { rejectWithValue, dispatch }) => {
-    const response = await fetch(`${hostname}/product/${id}`, {
+    const response = await fetch(`${appConfig.ip}/product/${id}`, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',
@@ -137,7 +137,7 @@ export const updateProduct = createAsyncThunk(
   'updateProduct',
   async (data, { rejectWithValue, dispatch }) => {
     console.log('updated data', data)
-    const response = await fetch(`${hostname}/product/${data.productId}`, {
+    const response = await fetch(`${appConfig.ip}/product/${data.productId}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -181,7 +181,7 @@ export const productDetail = createSlice({
       })
       .addCase(createProduct.fulfilled, (state, action) => {
         state.loading = false
-        state.message = action.payload.message
+        state.result = action.payload
       })
       .addCase(createProduct.rejected, (state, action) => {
         state.loading = false
@@ -245,7 +245,7 @@ export const productDetail = createSlice({
       })
       .addCase(updateProduct.fulfilled, (state, action) => {
         state.loading = false
-        state.message = action.payload.message
+        state.message = action.payload
         // state.products = state.products.map((ele) =>
         //   ele.id == action.payload.id ? action.payload : ele
         // );

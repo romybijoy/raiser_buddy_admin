@@ -151,6 +151,13 @@ const Providers = () => {
           </Button>
         </Form> */}
           <Card.Body>
+          <Button className="btn_cmn" style={{ marginBottom: '15px' }}>
+            <Link to="/add-provider" style={{ textDecoration: 'none', color: 'white' }}>
+              <i className="fa fa-plus fa-md"></i>
+
+              <span style={{ marginLeft: '5px', fontWeight: 'bold' }}>ADD</span>
+            </Link>
+          </Button>
             <Table className="mt-4" striped bordered hover size="sm">
               <thead>
                 <tr>
@@ -159,7 +166,6 @@ const Providers = () => {
                   <th>Email</th>
                   <th>Type</th>
                   <th>Mobile No.</th>
-                  <th>Image</th>
                   <th>Actions</th>
                 </tr>
               </thead>
@@ -174,9 +180,6 @@ const Providers = () => {
                     <td>{provider?.email}</td>
                     <td>{provider?.role === 'INDIVIDUAL' ? 'Farmer' : 'Company'}</td>
                     <td>{provider?.mobile_number}</td>
-                    <td>
-                      <img src={provider.image} width="100px" height="100px" />
-                    </td>
                     <td>
                       <CIcon icon={cilUserUnfollow} size="xl" onClick={() => submit(provider?.id)} />
                     </td>

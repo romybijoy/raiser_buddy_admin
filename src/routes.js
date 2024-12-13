@@ -23,6 +23,7 @@ const Toasts = React.lazy(() => import('./views/notifications/toasts/Toasts'))
 const Widgets = React.lazy(() => import('./views/widgets/Widgets'))
 const Users = React.lazy(() => import('./views/users/Users'))
 const Providers = React.lazy(() => import('./views/providers/Providers'))
+const AddProvider = React.lazy(() => import('./views/providers/AddProvider'))
 const Products = React.lazy(() => import('./views/products/Products'))
 const Category = React.lazy(() => import('./views/category/Category'))
 const Stocks = React.lazy(() => import('./views/stocks/Stocks'))
@@ -69,6 +70,7 @@ const routes = [
   { path: '/orders', name: 'Orders', element: Orders },
 
   { path: '/providers', name: 'Providers', element: Providers },
+  { path: '/add-provider', name: 'Add Provider', element: AddProvider },
   { path: '/sales', name: 'Sales', element: Sales },
   { path: '/coupon', name: 'Coupon', element: Coupon },
   { path: '/add-coupon', name: 'Add Coupon', element: AddCoupon },

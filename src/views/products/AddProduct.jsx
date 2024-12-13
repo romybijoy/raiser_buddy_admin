@@ -5,8 +5,8 @@ import { useDispatch, useSelector } from 'react-redux'
 import { Firebase } from '../../firebase/config'
 import FormContainer from '../../components/Form/FormContainer'
 import { Alert, Button, Form, Image as image } from 'react-bootstrap'
-import Loader from '../../components/Loader/Loader'
-import { showCategory, fetchCategoryById } from '../../redux/slices/CategorySlice'
+import { showCategory } from '../../redux/slices/CategorySlice'
+import { showProvider } from '../../redux/slices/ProviderSlice'
 
 import { toast } from 'react-toastify'
 import ImageCropper from '../../components/ImageUpload/ImageCropper'
@@ -22,6 +22,7 @@ const AddProduct = () => {
     discount: 0,
     quantity: 0,
     categoryId: '',
+    provider: '',
   })
   // const [image, setImage] = useState('')
   const [images, setImages] = useState([])
@@ -45,10 +46,13 @@ const AddProduct = () => {
   const inputRef = useRef()
 
   const { categories } = useSelector((state) => state.category)
-  const { error, message } = useSelector((state) => state.product)
+  const { error, result } = useSelector((state) => state.product)
+
+  const { providers } = useSelector((state) => state.provider)
 
   useEffect(() => {
     dispatch(showCategory({ page: 0, pageSize: 30 }))
+    dispatch(showProvider({ page: 0, pageSize: 30 }))
   }, [])
 
   const handleInputChange = (e) => {
@@ -57,19 +61,23 @@ const AddProduct = () => {
   }
 
   const handleSelectChange = (e) => {
-    // let category = categories.find((item) => item.categoryId === Number(e.target.value))
-    // console.log(category)
     setFormData({ ...formData, categoryId: e.target.value })
+  }
 
-    // setCategoryId(e.target.value);
+  const handleSelectProviderChange = (e) => {
+    setFormData({ ...formData, provider: e.target.value })
   }
 
   const handleOnChange = (event) => {
+    if (imgUrls.length >= 3) {
+      alert('You can only upload up to 3 images')
+      return
+    }
+
     if (event.target.files && event.target.files.length > 0) {
       for (let i = 0; i < event.target.files.length; i++) {
         const reader = new FileReader()
         reader.readAsDataURL(event.target.files[i])
-        console.log(reader.result)
         reader.onload = function (e) {
           setImages(reader.result)
           setImgName(event.target.files[i].name)
@@ -114,10 +122,11 @@ const AddProduct = () => {
           ref.getDownloadURL().then((url) => {
             if (url) {
               setUploading(false)
-              //console.log(e.target.name, url)
-              setImgUrls([...imgUrls, url])
+              console.log(url)
+              setImgUrls((prevImages) => [...prevImages, url])
               // setImages([...images,url]);
               console.log(imgUrls)
+              setValidated(true)
             }
           })
         })
@@ -130,27 +139,7 @@ const AddProduct = () => {
     setImage('')
   }
 
-  const handleImageChange = (e) => {
-    for (let i = 0; i < e.target.files.length; i++) {
-      // setImage(e.target.files[i])
-      setUploading(true)
-      Firebase.storage()
-        .ref(`/product/${e.target.files[i].name}`)
-        .put(e.target.files[i])
-        .then(({ ref }) => {
-          ref.getDownloadURL().then((url) => {
-            if (url) {
-              setUploading(false)
-              console.log(e.target.name, url)
-              setImages([...images, url])
-              // setImages([...images,url]);
-              console.log(images)
-            }
-          })
-        })
-    }
-  }
-
+ 
   const handleSubmit = async (e) => {
     const form = e.currentTarget
 
@@ -175,18 +164,17 @@ const AddProduct = () => {
           quantity: 0,
           discount: 0,
           categoryId: 0,
+          provider: '',
         })
         console.log(error)
         if (error === Number(409)) {
           setValError('Product already exists !!!')
           toast.error('Product already exists !!!')
-          navigate('/products')
-        } else if (message !== null) {
+        } else if (result?.statusCode === Number(201)) {
           toast.success('Product added successfully')
           navigate('/products')
         } else {
           toast.error('Something went wrong!!!')
-          navigate('/products')
         }
       } catch (err) {
         toast.error(err)
@@ -251,12 +239,32 @@ const AddProduct = () => {
           >
             <option value="">Select..</option>
             {categories?.map((category, i) => (
-              <option key={i} value={category.categoryId}>
+              <option key={i} value={Number(category.categoryId)}>
                 {category.name}
               </option>
             ))}
           </Form.Control>
           <Form.Control.Feedback type="invalid">Select a category.</Form.Control.Feedback>
+        </Form.Group>
+
+        <Form.Group className="my-2" controlId="provider">
+          <Form.Label>Provider</Form.Label>
+
+          <Form.Control
+            as="select"
+            aria-label="provider"
+            name="provider"
+            onChange={handleSelectProviderChange}
+            required
+          >
+            <option value="">Select..</option>
+            {providers?.map((provider, i) => (
+              <option key={i} value={provider.id}>
+                {provider.email}
+              </option>
+            ))}
+          </Form.Control>
+          <Form.Control.Feedback type="invalid">Select a provider.</Form.Control.Feedback>
         </Form.Group>
 
         <Form.Group className="my-2" controlId="price">
@@ -300,22 +308,6 @@ const AddProduct = () => {
 
         <Form.Group className="my-2" controlId="image">
           <Form.Label>Images</Form.Label>
-          {/* <br />
-          {uploading ? (
-            <Loader />
-          ) : (
-            images?.map((image) => {
-              console.log(image), (<Image src={image} />)
-            })
-          )}
-
-          <Form.Control
-            type="file"
-            label="Choose file"
-            multiple
-            onChange={handleImageChange}
-          ></Form.Control> */}
-          {/* <input type="file" multiple name="images" onChange={handleImageChange} /> */}
 
           <Form.Control
             type="file"
@@ -325,7 +317,6 @@ const AddProduct = () => {
             required
             isInvalid={validated && currentPage === 'crop-img'}
             onChange={handleOnChange}
-            // style={{ display: 'none' }}
           ></Form.Control>
           {currentPage === 'crop-img' ? (
             <ImageCropper
@@ -335,17 +326,21 @@ const AddProduct = () => {
               onCropCancel={onCropCancel}
             />
           ) : (
-            <div></div>
+            <></>
           )}
 
           <br />
-          {/* {currentPage === 'img-cropped' && ( images && images?.map((img) => {
-            <div>
-              <div>
-                <img src={img} width="200px" height="200px" />
-              </div>
-            </div>})
-          )} */}
+          <div style={{ display: 'flex', gap: '10px' }}>
+            {imgUrls.length > 0 &&
+              imgUrls.map((img, i) => (
+                <img
+                  key={i}
+                  src={img}
+                  alt={i}
+                  style={{ width: '100px', height: 'auto', border: '1px solid black' }}
+                />
+              ))}
+          </div>
           <Form.Control.Feedback type="invalid">Please choose an image</Form.Control.Feedback>
         </Form.Group>
 
