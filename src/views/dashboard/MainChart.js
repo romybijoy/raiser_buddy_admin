@@ -1,11 +1,26 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 
 import { CChartLine } from '@coreui/react-chartjs'
 import { getStyle } from '@coreui/utils'
 
-const MainChart = (props) => {
+const MainChart = ({ type, dataInput }) => {
   const chartRef = useRef(null)
-  console.log(props.data)
+  const [labels, setLabels] = useState([])
+  const [salesData, setSalesData] = useState([])
+
+  useEffect(() => {
+    if (type === 'Month') {
+      setLabels(dataInput && dataInput?.map((item) => item.formattedMonthName))
+      setSalesData(dataInput && dataInput?.map((item) => item.totalSales))
+    } else if (type === 'Date') {
+      setLabels(dataInput && dataInput?.map((item) => item.date))
+      setSalesData(dataInput && dataInput?.map((item) => item.totalSales))
+    } else {
+      setLabels(dataInput && dataInput?.map((item) => item.year))
+      setSalesData(dataInput && dataInput?.map((item) => item.totalSales))
+    }
+  }, [type, dataInput])
+
   useEffect(() => {
     document.documentElement.addEventListener('ColorSchemeChange', () => {
       if (chartRef.current) {
@@ -27,8 +42,7 @@ const MainChart = (props) => {
   }, [chartRef])
 
   const random = () => Math.round(Math.random() * 100)
-  const labels = props.data && props.data.map((item) => item.period)
-  const salesData = props.data && props.data.map((item) => item.totalSales)
+
   return (
     <>
       <CChartLine
@@ -37,45 +51,12 @@ const MainChart = (props) => {
         data={{
           labels: labels,
           datasets: [
-            // {
-            //   label: 'My First dataset',
-            //   backgroundColor: `rgba(${getStyle('--cui-info-rgb')}, .1)`,
-            //   borderColor: getStyle('--cui-info'),
-            //   pointHoverBackgroundColor: getStyle('--cui-info'),
-            //   borderWidth: 2,
-            //   data: [
-            //     random(50, 200),
-            //     random(50, 200),
-            //     random(50, 200),
-            //     random(50, 200),
-            //     random(50, 200),
-            //     random(50, 200),
-            //     random(50, 200),
-            //   ],
-            //   fill: true,
-            // },
-            // {
-            //   label: 'My Second dataset',
-            //   backgroundColor: 'transparent',
-            //   borderColor: getStyle('--cui-success'),
-            //   pointHoverBackgroundColor: getStyle('--cui-success'),
-            //   borderWidth: 2,
-            //   data: [
-            //     random(50, 200),
-            //     random(50, 200),
-            //     random(50, 200),
-            //     random(50, 200),
-            //     random(50, 200),
-            //     random(50, 200),
-            //     random(50, 200),
-            //   ],
-            // },
             {
-              label: 'Sales occured this month',
+              label: 'Sales occured',
               backgroundColor: 'transparent',
               borderColor: getStyle('--cui-danger'),
               pointHoverBackgroundColor: getStyle('--cui-danger'),
-              borderWidth: 2,
+              borderWidth: 3,
               // borderDash: [8, 5],
               data: salesData,
             },
@@ -85,21 +66,21 @@ const MainChart = (props) => {
           maintainAspectRatio: false,
           plugins: {
             legend: {
-              display: false,
+              display: true,
             },
           },
           scales: {
             x: {
               grid: {
                 color: getStyle('--cui-border-color-translucent'),
-                drawOnChartArea: false,
+                drawOnChartArea: true,
               },
               ticks: {
                 color: getStyle('--cui-body-color'),
               },
             },
             y: {
-              beginAtZero: true,
+              beginAtZero: false,
               border: {
                 color: getStyle('--cui-border-color-translucent'),
               },
