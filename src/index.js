@@ -11,6 +11,8 @@ import { AuthContextProvider } from './context/AuthContext'
 
 createRoot(document.getElementById('root')).render(
   <Provider store={store}>
+    <AuthContextProvider>
     <App />
+    </AuthContextProvider>
   </Provider>,
 )

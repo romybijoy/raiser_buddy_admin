@@ -1,11 +1,11 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
-import { hostname } from '../../config'
+import { appConfig } from '../../config'
 
 const token = localStorage.getItem('token')
 //create action
 export const createUser = createAsyncThunk('createUser', async (data, { rejectWithValue }) => {
   console.log('data', data)
-  const response = await fetch(`${hostname}/auth/register`, {
+  const response = await fetch(`${appConfig.ip}/auth/register`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -25,7 +25,7 @@ export const createUser = createAsyncThunk('createUser', async (data, { rejectWi
 export const showOrder = createAsyncThunk('showOrder', async (data, { rejectWithValue }) => {
   console.log(data.page)
   let response
-  response = await fetch(`${hostname}/admin/orders?pageNumber=${data.page}&pageSize=5`, {
+  response = await fetch(`${appConfig.ip}/admin/orders?pageNumber=${data.page}&pageSize=5`, {
     method: 'GET',
     headers: {
       Authorization: `Bearer ${token}`,
@@ -47,7 +47,7 @@ export const showUsersByKeyword = createAsyncThunk(
     console.log(data.page)
     let response
     response = await fetch(
-      `${hostname}/admin/get-all-users/keyword/${data.keyword}?pageNumber=${data.page}&pageSize=5`,
+      `${appConfig.ip}/admin/get-all-users/keyword/${data.keyword}?pageNumber=${data.page}&pageSize=5`,
       {
         method: 'GET',
         headers: {
@@ -71,7 +71,7 @@ export const statusChange = createAsyncThunk(
   'statusChange',
   async (data, { rejectWithValue, dispatch }) => {
     console.log(data.status)
-    const response = await fetch(`${hostname}/admin/orders/${data.id}/${data.status}`, {
+    const response = await fetch(`${appConfig.ip}/admin/orders/${data.id}/${data.status}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -93,7 +93,7 @@ export const statusChange = createAsyncThunk(
 //update action
 export const updateUser = createAsyncThunk('updateUser', async (data, { rejectWithValue }) => {
   console.log('updated data', data)
-  const response = await fetch(`${hostname}/admin/update/${data.id}`, {
+  const response = await fetch(`${appConfig.ip}/admin/update/${data.id}`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
@@ -112,7 +112,7 @@ export const updateUser = createAsyncThunk('updateUser', async (data, { rejectWi
 
 //update action
 export const fetchUserById = createAsyncThunk('fetchUserById', async (id, { rejectWithValue }) => {
-  const response = await fetch(`${hostname}/admin/get-users/${id}`, {
+  const response = await fetch(`${appConfig.ip}/admin/get-users/${id}`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',

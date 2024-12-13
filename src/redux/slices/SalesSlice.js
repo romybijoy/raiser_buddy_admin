@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
-import { hostname } from '../../config'
+import { appConfig } from '../../config'
 
 const token = localStorage.getItem('token')
 const dateConverter = (dateString) =>{
@@ -20,6 +20,7 @@ const dateConverter = (dateString) =>{
   }
 
   
+  
 
 //read action
 export const showSales = createAsyncThunk('showSales', async (data, { rejectWithValue }) => {
@@ -28,7 +29,7 @@ export const showSales = createAsyncThunk('showSales', async (data, { rejectWith
   const startDate = dateConverter(data.startDate);
   const endDate =  dateConverter(data.endDate);
   let response 
-  response = await fetch(`${hostname}/sales/report?startDate=${startDate}&endDate=${endDate}`, {
+  response = await fetch(`${appConfig.ip}/sales/report?startDate=${startDate}&endDate=${endDate}`, {
     method: 'GET',
     headers: {
       Authorization: `Bearer ${token}`,

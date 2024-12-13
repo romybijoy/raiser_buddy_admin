@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
-import { hostname } from '../../config'
+import { appConfig } from '../../config'
 
 const token = localStorage.getItem('token')
 const dateConverter = (dateString) => {
@@ -23,24 +23,32 @@ const dateConverter = (dateString) => {
 export const showChartData = createAsyncThunk(
   'showChartData',
   async (data, { rejectWithValue }) => {
-    console.log(data)
-
-    const startDate = dateConverter(data.startDate)
-    const endDate = dateConverter(data.endDate)
     let response
-    response = await fetch(
-      `${hostname}/admin/dashboard/monthly?startDate=${startDate}&endDate=${endDate}`,
-      {
+    if (data === 'Month') {
+      response = await fetch(`${appConfig.ip}/admin/dashboard/monthly`, {
         method: 'GET',
         headers: {
           Authorization: `Bearer ${token}`,
         },
-      },
-    )
+      })
+    } else if (data === 'Date') {
+      response = await fetch(`${appConfig.ip}/admin/dashboard/daily`, {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+    } else {
+      response = await fetch(`${appConfig.ip}/admin/dashboard/yearly`, {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+    }
 
     try {
       const result = await response.json()
-      console.log(result)
       return result
     } catch (error) {
       return rejectWithValue(error)
@@ -51,7 +59,7 @@ export const showChartData = createAsyncThunk(
 //read action
 export const showCounts = createAsyncThunk('showCounts', async (data, { rejectWithValue }) => {
   let response
-  response = await fetch(`${hostname}/admin/dashboard/count`, {
+  response = await fetch(`${appConfig.ip}/admin/dashboard/count`, {
     method: 'GET',
     headers: {
       Authorization: `Bearer ${token}`,
@@ -60,7 +68,6 @@ export const showCounts = createAsyncThunk('showCounts', async (data, { rejectWi
 
   try {
     const result = await response.json()
-    console.log(result)
     return result
   } catch (error) {
     return rejectWithValue(error)
@@ -71,7 +78,7 @@ export const showTop10Product = createAsyncThunk(
   'showTop10Product',
   async (data, { rejectWithValue }) => {
     let response
-    response = await fetch(`${hostname}/product/top10`, {
+    response = await fetch(`${appConfig.ip}/product/top10`, {
       method: 'GET',
       headers: {
         Authorization: `Bearer ${token}`,
@@ -80,7 +87,6 @@ export const showTop10Product = createAsyncThunk(
 
     try {
       const result = await response.json()
-      console.log(result)
       return result
     } catch (error) {
       return rejectWithValue(error)
@@ -92,7 +98,7 @@ export const showTop10Category = createAsyncThunk(
   'showTop10Category',
   async (data, { rejectWithValue }) => {
     let response
-    response = await fetch(`${hostname}/category/top10`, {
+    response = await fetch(`${appConfig.ip}/category/top10`, {
       method: 'GET',
       headers: {
         Authorization: `Bearer ${token}`,
@@ -101,7 +107,6 @@ export const showTop10Category = createAsyncThunk(
 
     try {
       const result = await response.json()
-      console.log(result)
       return result
     } catch (error) {
       return rejectWithValue(error)
@@ -112,7 +117,7 @@ export const showTop10Category = createAsyncThunk(
 export const salesSlice = createSlice({
   name: 'sales',
   initialState: {
-    chartData: '',
+    chartData: [],
     loading: false,
     error: null,
     searchData: [],

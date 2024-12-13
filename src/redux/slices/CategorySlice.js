@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { hostname } from "../../config";
+import { appConfig } from "../../config";
 
 const token = localStorage.getItem("token");
 
@@ -9,7 +9,7 @@ export const createCategory = createAsyncThunk(
     console.log("data", data);
 
     try {
-      const response = await fetch(`${hostname}/category`, {
+      const response = await fetch(`${appConfig.ip}/category`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -39,7 +39,7 @@ export const showCategory = createAsyncThunk(
     let response;
     try{
       response = await fetch(
-          `${hostname}/category?pageNumber=${data.page}&pageSize=${data.pageSize}`,
+          `${appConfig.ip}/category?pageNumber=${data.page}&pageSize=${data.pageSize}`,
           {
             method: "GET",
             headers: {
@@ -66,7 +66,7 @@ export const showCategoryByKeyword = createAsyncThunk('showCategoryByKeyword', a
   try{
   let response
  response = await fetch(
-        `${hostname}/category/keyword/${data.keyword}?pageNumber=${data.page}&pageSize=5`,
+        `${appConfig.ip}/category/keyword/${data.keyword}?pageNumber=${data.page}&pageSize=5`,
         {
           method: 'GET',
           headers: {
@@ -91,7 +91,7 @@ export const showCategoryByKeyword = createAsyncThunk('showCategoryByKeyword', a
 export const fetchCategoryById = createAsyncThunk(
   "fetchCategoryById",
   async (id, { rejectWithValue }) => {
-    const response = await fetch(`${hostname}/category/${id}`, {
+    const response = await fetch(`${appConfig.ip}/category/${id}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -113,7 +113,7 @@ export const fetchCategoryById = createAsyncThunk(
 export const deleteCategory = createAsyncThunk(
   "deleteCategory",
   async (id, { rejectWithValue, dispatch }) => {
-    const response = await fetch(`${hostname}/category/${id}`, {
+    const response = await fetch(`${appConfig.ip}/category/${id}`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
@@ -138,7 +138,7 @@ export const updateCategory = createAsyncThunk(
   "updateCategory",
   async (data, { rejectWithValue, dispatch }) => {
     console.log("updated data", data);
-    const response = await fetch(`${hostname}/category/${data.categoryId}`, {
+    const response = await fetch(`${appConfig.ip}/category/${data.categoryId}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",

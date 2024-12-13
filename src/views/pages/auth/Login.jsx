@@ -19,11 +19,12 @@ const LoginScreen = () => {
 
   const [login, { isLoading }] = useLoginMutation()
 
-  const { userInfo } = useSelector((state) => state.auth)
+  // const { userInfo } = useSelector((state) => state.auth)
+  // const { googleSignIn, dbUserSignIn, user, facebookSignIn } = UserAuth();
   const role = localStorage.getItem('role')
   // useEffect(() => {
 
-  // }, [navigate, ])
+  // }, [navigate, user])
 
   const submitHandler = async (e) => {
     e.preventDefault()
@@ -54,21 +55,21 @@ const LoginScreen = () => {
     }
   }
 
-  const handleGoogleSignIn = async () => {
-    try {
-      await googleSignIn()
-    } catch (error) {
-      console.log(error)
-    }
-  }
+  // const handleGoogleSignIn = async () => {
+  //   try {
+  //     await googleSignIn()
+  //   } catch (error) {
+  //     console.log(error)
+  //   }
+  // }
 
-  const handleFacebookSignIn = async () => {
-    try {
-      await facebookSignIn()
-    } catch (error) {
-      console.log(error)
-    }
-  }
+  // const handleFacebookSignIn = async () => {
+  //   try {
+  //     await facebookSignIn()
+  //   } catch (error) {
+  //     console.log(error)
+  //   }
+  // }
 
   return (
     <FormContainer>
