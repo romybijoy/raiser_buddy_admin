@@ -39,13 +39,13 @@ const Sales = () => {
   const { sales, loading } = useSelector((state) => state.sales)
 
   const filterData = () => {
-    // const filtered = data.filter((item) => {
-    //   const itemDate = new Date(item.date)
-    //   return (!startDate || itemDate >= startDate) && (!endDate || itemDate <= endDate)
-    // })
-    // setFilteredData(filtered)
-
     dispatch(showSales({ startDate: startDate, endDate: endDate }))
+  }
+
+  const resetData = () => {
+    dispatch(showSales({ startDate: new Date(), endDate: new Date() }))
+    setStartDate(null)
+    setEndDate(null)
   }
   const downloadExcel = () => {
     const workbook = XLSX.utils.book_new()
@@ -110,51 +110,48 @@ const Sales = () => {
             />
           </Col>
         </Form.Group>
-        <Form.Group as={Row} className="pt-2">
-          <Col sm={{ span: 10, offset: 2 }}>
-            <Button onClick={filterData}>Filter</Button>
-          </Col>
-        </Form.Group>
+
+        <div className="pt-3">
+          <Button className="m-2" onClick={filterData}>
+            Select Date Range
+          </Button>
+          <Button onClick={resetData}>Reset</Button>
+        </div>
       </Form>
 
       {sales && (
         <table id="sales-table">
           <tbody>
             <tr>
-              <td>Overall Sales Count</td>
-              <td className="">{sales.salesCount}</td>
+              <td>Overall Sales Count :</td>
+              <td>{sales.salesCount}</td>
             </tr>
             <tr>
-              <td>Overall Sales Discount </td>
+              <td>Overall Sales Discount :</td>
               <td>{sales.totalDiscount}</td>
             </tr>
             <tr>
-              <td>Overall Total Sales</td>
-              <td>
-                {''}
-                {sales.totalSales}
-              </td>
+              <td>Overall Total Sales :</td>
+              <td>{sales.totalSales}</td>
             </tr>
           </tbody>
         </table>
       )}
 
-      <Table className="mt-4" striped bordered hover size="sm" id="order-table">
-        <thead>
-          <tr>
-            {/* <th>S. No.</th> */}
-            <th>Date</th>
-            <th>Order Id</th>
-            <th>Total Price</th>
-            <th>discount</th>
-          </tr>
-        </thead>
-        <tbody>
-          {loading ? (
-            <h2>Loading</h2>
-          ) : (
-            sales?.orders?.length !== 0 &&
-            sales?.orders?.map((item, i) => (
+      {loading ? (
+        <h3>Loading</h3>
+      ) : (
+        <Table className="mt-4" striped bordered hover size="sm" id="order-table">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Order Id</th>
+              <th>Total Price</th>
+              <th>discount</th>
+            </tr>
+          </thead>
+          <tbody>
+            {sales?.orders?.map((item, i) => (
               <tr key={i}>
                 {/* <td>{5 * (p - 1) + i + 1}</td> */}
                 <td>{item.orderDate}</td>
@@ -162,10 +159,10 @@ const Sales = () => {
                 <td>{item.totalPrice}</td>
                 <td>{item.discount}</td>
               </tr>
-            ))
-          )}
-        </tbody>
-      </Table>
+            ))}
+          </tbody>
+        </Table>
+      )}
       {sales === '' && <NodataMsg />}
 
       <div className="pt-3">
