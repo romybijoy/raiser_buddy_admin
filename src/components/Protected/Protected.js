@@ -5,7 +5,7 @@ import { UserAuth } from '../../context/AuthContext'
 const Protected = ({ children }) => {
   const { dbUser } = UserAuth()
   if (!dbUser) {
-    return <Navigate to="/" />
+    return <Navigate to="/login" />
   }
 
   return children
