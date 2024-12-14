@@ -1,5 +1,9 @@
 import React, { useEffect, useState } from 'react'
-import { blockProvider, showProvider, showProvidersByKeyword } from '../../redux/slices/ProviderSlice'
+import {
+  blockProvider,
+  showProvider,
+  showProvidersByKeyword,
+} from '../../redux/slices/ProviderSlice'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link, Navigate, useNavigate } from 'react-router-dom'
 import { Button, Container, Form, Card, Table } from 'react-bootstrap'
@@ -151,14 +155,14 @@ const Providers = () => {
           </Button>
         </Form> */}
           <Card.Body>
-          <Button className="btn_cmn" style={{ marginBottom: '15px' }}>
-            <Link to="/add-provider" style={{ textDecoration: 'none', color: 'white' }}>
-              <i className="fa fa-plus fa-md"></i>
+            <Button className="btn_cmn" style={{ marginBottom: '15px' }}>
+              <Link to="/add-provider" style={{ textDecoration: 'none', color: 'white' }}>
+                <i className="fa fa-plus fa-md"></i>
 
-              <span style={{ marginLeft: '5px', fontWeight: 'bold' }}>ADD</span>
-            </Link>
-          </Button>
-            <Table className="mt-4" striped bordered hover size="sm">
+                <span style={{ marginLeft: '5px', fontWeight: 'bold' }}>ADD</span>
+              </Link>
+            </Button>
+            <Table className="mt-4" striped bordered hover size="sm" responsive>
               <thead>
                 <tr>
                   <th>S. No.</th>
@@ -170,21 +174,27 @@ const Providers = () => {
                 </tr>
               </thead>
               <tbody>
-              {loading ? (
-                <h2>Loading</h2>
-              ) : (
-                providers && providers?.map((provider, i) => (
-                  <tr key={i}>
-                    <td>{5 * (p - 1) + i + 1}</td>
-                    <td>{provider?.name}</td>
-                    <td>{provider?.email}</td>
-                    <td>{provider?.role === 'INDIVIDUAL' ? 'Farmer' : 'Company'}</td>
-                    <td>{provider?.mobile_number}</td>
-                    <td>
-                      <CIcon icon={cilUserUnfollow} size="xl" onClick={() => submit(provider?.id)} />
-                    </td>
-                  </tr>
-                )))}
+                {loading ? (
+                  <h2>Loading</h2>
+                ) : (
+                  providers &&
+                  providers?.map((provider, i) => (
+                    <tr key={i}>
+                      <td>{5 * (p - 1) + i + 1}</td>
+                      <td>{provider?.name}</td>
+                      <td>{provider?.email}</td>
+                      <td>{provider?.role === 'INDIVIDUAL' ? 'Farmer' : 'Company'}</td>
+                      <td>{provider?.mobile_number}</td>
+                      <td>
+                        <CIcon
+                          icon={cilUserUnfollow}
+                          size="xl"
+                          onClick={() => submit(provider?.id)}
+                        />
+                      </td>
+                    </tr>
+                  ))
+                )}
               </tbody>
             </Table>
             {providers && providers?.length === 0 && <NodataMsg />}

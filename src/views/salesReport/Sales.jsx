@@ -141,7 +141,7 @@ const Sales = () => {
       {loading ? (
         <h3>Loading</h3>
       ) : (
-        <Table className="mt-4" striped bordered hover size="sm" id="order-table">
+        <Table className="mt-4" striped bordered hover responsive size="sm" id="order-table">
           <thead>
             <tr>
               <th>Date</th>

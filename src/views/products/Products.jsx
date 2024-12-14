@@ -111,7 +111,7 @@ const Products = () => {
             </Link>
           </Button>
 
-          <Table className="mt-4" striped bordered hover size="sm">
+          <Table className="mt-4" striped bordered hover size="sm" responsive>
             <thead>
               <tr>
                 <th>S. No.</th>
