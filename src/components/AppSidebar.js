@@ -14,8 +14,6 @@ import {
 import CIcon from '@coreui/icons-react'
 
 import { AppSidebarNav } from './AppSidebarNav'
-import { logo } from 'src/assets/brand/logo'
-import { sygnet } from 'src/assets/brand/sygnet'
 import { set, setUnFoldable } from '../../src/redux/slices/SidebarSlice'
 
 // sidebar nav config
@@ -38,13 +36,7 @@ const AppSidebar = () => {
     >
       <CSidebarHeader className="border-bottom">
         <CSidebarBrand to="/">
-          <CImage
-            align="start"
-            rounded
-            src="src/assets/images/applogo.png"
-            width={80}
-            height={60}
-          />
+          <CImage align="start" rounded src="applogo.png" width={80} height={60} />
           {/* <CIcon customClassName="sidebar-brand-full" icon={logo} height={32} /> */}
           {/* <CIcon customClassName="sidebar-brand-narrow" icon={sygnet} height={32} /> */}
           {/* <CHeaderBrand style={{textDecoration : "none"}}>Raiser Buddy</CHeaderBrand> */}
