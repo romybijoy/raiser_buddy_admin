@@ -1,5 +1,5 @@
 import React, { Suspense, useEffect } from 'react'
-import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 
 import { CSpinner, useColorModes } from '@coreui/react'
@@ -7,7 +7,7 @@ import './scss/style.scss'
 
 // Containers
 const DefaultLayout = React.lazy(() => import('./layout/DefaultLayout'))
-import Protected from '../src/components/Protected/Protected'
+const Protected = React.lazy(() => import('../src/components/Protected/Protected'))
 // Pages
 const Login = React.lazy(() => import('./views/pages/auth/Login'))
 const Register = React.lazy(() => import('./views/pages/register/Register'))
@@ -42,10 +42,19 @@ const App = () => {
         }
       >
         <Routes>
+          <Route path="/" element={<Navigate to="/login" />} />
           <Route exact path="/login" name="Login" element={<Login />} />
           <Route exact path="/404" name="Page 404" element={<Page404 />} />
           <Route exact path="/500" name="Page 500" element={<Page500 />} />
-          <Route path="*" name="Home" element={<Protected><DefaultLayout /></Protected>} />
+          <Route
+            path="*"
+            name="Home"
+            element={
+              <Protected>
+                <DefaultLayout />
+              </Protected>
+            }
+          />
         </Routes>
       </Suspense>
     </BrowserRouter>

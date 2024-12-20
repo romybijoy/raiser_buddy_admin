@@ -7,7 +7,45 @@ export default defineConfig(() => {
   return {
     base: './',
     build: {
+      chunkSizeWarningLimit: 1000,
       outDir: 'dist',
+      rollupOptions: {
+        output: {
+          manualChunks: {
+            // Split out react related modules into a separate chunk
+            react: ['react', 'react-dom'],
+            // Split out other vendor modules into a separate chunk
+            redux: ['redux', 'react-redux'], 
+            formik: ['formik', 'yup'],
+            // firebase: ['firebase'], 
+            coreui: [
+              '@coreui/chartjs',
+              '@coreui/coreui',
+              '@coreui/icons',
+              '@coreui/icons-react',
+              '@coreui/react',
+              '@coreui/react-chartjs',
+              '@coreui/utils',
+            ],
+            chartjs: ['chart.js'],
+            ui: [
+              'react-bootstrap',
+              'react-datepicker',
+              'react-easy-crop',
+              'react-toastify',
+              'react-social-login-buttons',
+            ], // Split out utility libraries into a separate chunk
+            utils: [
+              'classnames',
+              'core-js',
+              'dotenv',
+              'prop-types',
+              'simplebar-react',
+              '@popperjs/core',
+            ],
+          },
+        },
+      },
     },
     css: {
       postcss: {
