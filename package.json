@@ -6,7 +6,7 @@
   "license": "MIT",
   "author": "The Raiser Buddy Team",
   "scripts": {
-    "build": "vite build",
+    "build": "node --max-old-space-size=4096 ./node_modules/.bin/vite build",
     "lint": "eslint \"src/**/*.js\"",
     "serve": "vite preview",
     "start": "vite"
@@ -27,6 +27,7 @@
     "dotenv": "^16.4.5",
     "firebase": "^10.13.1",
     "formik": "^2.4.6",
+    "patch-package": "^8.0.0",
     "prop-types": "^15.8.1",
     "raiserbuddy": "file:",
     "react": "^18.3.1",
