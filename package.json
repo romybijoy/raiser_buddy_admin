@@ -6,7 +6,7 @@
   "license": "MIT",
   "author": "The Raiser Buddy Team",
   "scripts": {
-    "build": "node --max-old-space-size=4096 ./node_modules/.bin/vite build",
+    "build": "node --max-old-space-size=4096 vite build",
     "lint": "eslint \"src/**/*.js\"",
     "serve": "vite preview",
     "start": "vite"
@@ -58,6 +58,6 @@
     "postcss": "^8.4.38",
     "prettier": "3.3.2",
     "sass": "^1.77.5",
-    "vite": "^5.2.13"
+    "vite": "^5.4.11"
   }
 }
