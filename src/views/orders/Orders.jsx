@@ -17,6 +17,7 @@ const Orders = () => {
   const [page, setPage] = useState(0)
   const [perPage, setPerPage] = useState(10)
   const [searchData, setSearchData] = useState('')
+  const [currentStatus, setCurrentStatus] = useState('')
 
   const [visible, setVisible] = useState(false)
   const [status, setStatus] = useState('')
@@ -32,21 +33,8 @@ const Orders = () => {
     return <h2>Loading</h2>
   }
 
-  // const cancelOrder = async (orderId) => {
-  //   try {
-  //     // Prompt for confirmation before deleting the order
-  //     const confirmDelete = window.confirm('Are you sure you want to cancel this order?')
-
-  //     if (confirmDelete) {
-  //       dispatch(cancelOrder(orderId))
-  //       // After deleting the order, fetch the updated list of orders
-  //       navigate('/orders')
-  //     }
-  //   } catch (error) {
-  //     console.error('Error canceling order:', error)
-  //   }
-  // }
   const handleStatus = () => {
+    if (!status) return
     dispatch(statusChange({ status: status, id: id }))
     setVisible(false)
     dispatch(showOrder())
@@ -70,13 +58,23 @@ const Orders = () => {
     }
   }
 
-  const submit = (id) => {
-    setVisible(!visible)
+  const submit = (id, status) => {
+    setVisible(true)
     setId(id)
+    setStatus('') // reset dropdown
+    setCurrentStatus(status)
   }
 
   let p = page + 1
   let countPagination = Math.ceil(count / 5)
+
+  const statusFlow = {
+    PLACED: ['CONFIRMED', 'CANCELLED'],
+    CONFIRMED: ['SHIPPED', 'CANCELLED'],
+    SHIPPED: ['DELIVERED'],
+    DELIVERED: [],
+    CANCELLED: [],
+  }
 
   return (
     <>
@@ -128,11 +126,13 @@ const Orders = () => {
                       <td>{new Date(order?.orderDate).toLocaleString()}</td>
                       <td>{order?.orderStatus}</td>
                       <td>
-                        <i
-                          className="fa fa-exchange"
-                          style={{ paddingLeft: 10 }}
-                          onClick={() => submit(order?.id)}
-                        ></i>
+                        {order.orderStatus !== 'PENDING' && (
+                          <i
+                            className="fa fa-exchange"
+                            style={{ paddingLeft: 10 }}
+                            onClick={() => submit(order?.id, order?.orderStatus)}
+                          ></i>
+                        )}
                         {/* <i
                           className="fa fa-ban"
                           style={{ paddingLeft: 10 }}
@@ -163,19 +163,42 @@ const Orders = () => {
         <CModalHeader>
           <CModalTitle id="VerticallyCenteredExample">Status change</CModalTitle>
         </CModalHeader>
-        <CModalBody className="pb-5">
-          <select
-            name="status"
-            onChange={({ target }) => {
-              setStatus(target.value)
-            }}
-          >
-            <option>Select Status..</option>
-            <option value="confirmed">CONFIRMED</option>
-            <option value="ship">SHIPPED</option>
-            <option value="deliver">DELIVERED</option>
-            <option value="cancel">CANCELLED</option>
-          </select>
+        <CModalBody className="pb-5 space-y-4">
+          {/* Current Status */}
+          <p className="text-sm text-gray-500 mx-1">
+            Current Status :{' '}
+            <span className="font-semibold text-gray-700 mx-1">{currentStatus}</span>
+          </p>
+
+          {/* Dropdown */}
+          {statusFlow[currentStatus]?.length > 0 ? (
+            <div className="flex flex-col gap-2 w-full">
+              <label className="text-sm font-medium text-gray-600 mx-1">Update Status</label>
+
+              <select
+                value={status}
+                onChange={(e) => setStatus(e.target.value)}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg 
+               bg-white text-gray-700 
+               focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                <option value="">Select Status</option>
+
+                {statusFlow[currentStatus]?.map((s) => (
+                  <option key={s} value={s}>
+                    {s === 'CONFIRMED' && '✅ Confirmed'}
+                    {s === 'SHIPPED' && '🚚 Shipped'}
+                    {s === 'DELIVERED' && '📦 Delivered'}
+                    {s === 'CANCELLED' && '❌ Cancelled'}
+                  </option>
+                ))}
+              </select>
+            </div>
+          ) : (
+            <div className="text-gray-500 text-sm bg-gray-100 p-3 rounded-lg">
+              ✅ This order is completed. No further updates allowed.
+            </div>
+          )}
         </CModalBody>
         <CModalFooter>
           <CButton color="secondary" onClick={() => setVisible(false)}>
