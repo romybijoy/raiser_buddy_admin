@@ -66,26 +66,25 @@ export const showUsersByKeyword = createAsyncThunk(
   },
 )
 
-//block action
 export const statusChange = createAsyncThunk(
   'statusChange',
-  async (data, { rejectWithValue, dispatch }) => {
-    console.log(data.status)
-    const response = await fetch(`${appConfig.ip}/admin/orders/${data.id}/${data.status}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
-    })
-
+  async ({ id, status }, { rejectWithValue }) => {
     try {
-      const result = await response.json()
-      console.log(result)
-      dispatch(showOrder({ page: 0 }))
-      return result
+      const response = await fetch(`${appConfig.ip}/admin/orders/${id}/status?status=${status}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+      })
+
+      if (!response.ok) {
+        throw new Error('Failed to update status')
+      }
+
+      return await response.json()
     } catch (error) {
-      return rejectWithValue(error)
+      return rejectWithValue(error.message)
     }
   },
 )

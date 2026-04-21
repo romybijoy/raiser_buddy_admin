@@ -10,6 +10,7 @@ import NodataMsg from '../../components/NoDataMsg/NoDataMsg'
 import CIcon from '@coreui/icons-react'
 import { cilUserUnfollow } from '@coreui/icons'
 import { CButton, CModal, CModalBody, CModalFooter, CModalHeader, CModalTitle } from '@coreui/react'
+import { toast } from 'react-toastify'
 
 const Orders = () => {
   const dispatch = useDispatch()
@@ -33,11 +34,19 @@ const Orders = () => {
     return <h2>Loading</h2>
   }
 
-  const handleStatus = () => {
+  const handleStatus = async () => {
     if (!status) return
-    dispatch(statusChange({ status: status, id: id }))
-    setVisible(false)
-    dispatch(showOrder())
+
+    try {
+      await dispatch(statusChange({ id, status })).unwrap()
+
+      toast.success("Status updated successfully");
+
+      setVisible(false)
+      dispatch(showOrder({ page }))
+    } catch (err) {
+      toast.error("Failed to update status");
+    }
   }
 
   function handlePageClick(e) {
